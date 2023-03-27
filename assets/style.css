@@ -1,0 +1,52 @@
+.Main{
+    background-color: rgb(246, 250, 250);
+}
+
+.Heading{
+    text-align: center;
+    color: rgb(0, 0, 0);
+
+}
+.buttons{
+    width: 100%;
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+
+}
+.top_button{
+    width: 10%;}
+
+Button{
+    height: 40px;
+    width: 90%;
+}
+
+.analyze{
+    width: 80%;
+    margin-left: 10%;
+    border-style: groove;
+    background-color: white;
+}
+
+.SecondGraph{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.first_dropdown{
+    width: 50%;
+    margin-left: 25%;
+    padding-top: 30px;
+}
+
+.bar_chart{
+    width: 50%;
+}
+
+.pie_chart{
+    width: 50%;
+}
