@@ -1,10 +1,12 @@
-from dash import Dash, html, dcc, Input, Output, ctx
+from dash import Dash, html, dcc, Input, Output, ctx, dash_table
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
+from collections import OrderedDict
+from dash.dash_table.Format import Format, Scheme, Sign, Symbol
 
-# Checking
+
 # importing the dataset
 bishkek_data = pd.read_csv("assets/Bishkek_data.csv")
 data = pd.read_csv("assets/pm2_data.csv")
@@ -103,7 +105,15 @@ def displayClick(btn1, btn2, btn3):
     
     
     elif "btn-nclicks-2" == ctx.triggered_id:
-        msg = "Button 2 was most recently clicked"
+
+
+        return html.Div([
+
+        ], className='prediction')
+
+
+
+
     elif "btn-nclicks-3" == ctx.triggered_id:
         msg = "Button 3 was most recently clicked"
 
