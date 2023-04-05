@@ -50,3 +50,38 @@ Button{
 .pie_chart{
     width: 50%;
 }
+
+
+/* -------------------------Prediction styling */
+.Prediction-section{
+    width: 90%;
+    margin-left: 5%;
+}
+.First_section_prediction{
+    border:1px solid black;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+}
+#table-editing-simple{
+    margin-top: 1%;
+    margin-left: 1%;
+    width: 90%;
+}
+Img{
+    width: 37%;
+}
+.Output_value{
+    text-align: center;
+    margin-top: 3%;
+    margin-bottom: 1%;
+    font-size: 20px;
+}
+
+.Catboost_classifier{
+    width: 50%;
+}
+#classifier{
+    width: 100%;
+}

@@ -5,8 +5,9 @@ import plotly.express as px
 import pandas as pd
 from collections import OrderedDict
 from dash.dash_table.Format import Format, Scheme, Sign, Symbol
+import pickle
 
-
+# -------------------------------------------- Analyze part -------------------------------------------------
 # importing the dataset
 bishkek_data = pd.read_csv("assets/Bishkek_data.csv")
 data = pd.read_csv("assets/pm2_data.csv")
@@ -16,6 +17,17 @@ pollutants = pd.read_csv("assets/grid-export.csv")
 data.dropna(inplace=True)
 pollutants['Day'] = pd.to_datetime(pollutants['Day'])
 data = data.replace('Unhealthy for Sensitive Groups', 'USG')
+
+# ---------------------------------------------Prediction part --------------------------------------------------
+# parameter values for 
+params = [
+    'year', 'month', 'day', 'hour',
+    'nowcast', 'aqi', 'raw'
+]
+
+
+
+
 
 
 # starting of the app
@@ -35,7 +47,7 @@ app.layout = html.Div([
     className='buttons'),
     html.Br(),
     html.Div(id='container-button-timestamp'),
-    html.Label("Air Pollutants from 2019-2022 in Bishkek"),
+    # html.Label("Air Pollutants from 2019-2022 in Bishkek"),
     
 ], className='Main')
 
@@ -57,8 +69,6 @@ def displayClick(btn1, btn2, btn3):
         # graph_3 = px.bar(data, x="Year", y="AQI",color="AQI Category",  barmode='group', title="Bishkek air pollution per year", width=500, height=400)
         graph_5 = px.line(data, x="Date (LT)", y="AQI",  title='AQI of Bishkek city from 2019 to 2022')
         graph_4 = px.line(pollutants, x="Day", y="PM1(mcg/m³)", title='Concentration of pollutants in Bishkek Air')
-
-
         return  html.Div([
             # first graph inside the analyze button
             html.Div([
@@ -106,11 +116,34 @@ def displayClick(btn1, btn2, btn3):
     
     elif "btn-nclicks-2" == ctx.triggered_id:
 
-
         return html.Div([
-
-        ], className='prediction')
-
+            html.Div([
+            html.Div(
+                dcc.Dropdown(
+                id='classifier',
+                options=['Catboost', 'LightGBM', 'XGBoost', 'ANN'],
+                value='Catboost'
+            )
+            ),
+            html.Div([
+                dash_table.DataTable(
+                    id='table-editing-simple',
+                    columns=(
+                        [{'id': p, 'name': p} for p in params]
+                    ),
+                    data=[
+                        dict(Model=i, **{param: 0 for param in params})
+                        for i in range(1)
+                    ],
+                    editable=True
+                ),
+                html.Div(
+                html.Div(id="example-output"), className='Output_value'
+                )],className='Catboost_classifier'),
+            html.Img(src='assets/catboost.png'),
+                
+            ], className='First_section_prediction')
+        ], className='Prediction-section')
 
 
 
@@ -118,6 +151,7 @@ def displayClick(btn1, btn2, btn3):
         msg = "Button 3 was most recently clicked"
 
 
+# ---------------------------------------------------Call backs for analyze function ------------------------------------------
 # this call back function updates the graphs of pollutants in the analyze section
 @app.callback(
             Output('air_pollutants', 'figure'),
@@ -136,6 +170,21 @@ def analyze(Value):
 def analyze(Value):
     graph_1 = px.line(bishkek_data, x="Date", y=Value, color='Specie', title='Bishkek City')
     return graph_1
+
+
+# ----------------------------------------- Call backs for predictions ----------------------------------
+
+@app.callback(
+    Output('example-output', 'children'),
+    Input('table-editing-simple', 'data'),
+    Input('table-editing-simple', 'columns'))
+def display_output(rows, columns):
+    df = pd.DataFrame(rows, columns=[c['name'] for c in columns])
+    input_value = df.values[:1]
+    pickled_model = pickle.load(open('assets/CatBoost', 'rb'))
+    pred = pickled_model.predict(input_value)
+    pred1 = "The predicted air quality is  " + pred[0]
+    return pred1
 
 
 if __name__ == "__main__":
